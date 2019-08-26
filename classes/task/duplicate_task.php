@@ -37,11 +37,11 @@ class duplicate_task extends \core\task\scheduled_task {
 
     public function execute() {
         global $DB;
-        require_once('../../locallib.php');
+        require_once( __DIR__ . '/../../locallib.php');
         // Get list of tasks.
         $todo = $DB->get_records('local_catdup_tasks', ['state' => 1]);
         foreach ($todo as $do) {
-            $record = new stdClass;
+            $record = new \stdClass();
             $record->id = $do->id;
             $record->state = 2;
             $record->timemodified = time();
@@ -49,10 +49,11 @@ class duplicate_task extends \core\task\scheduled_task {
             // First of all check that destination category is empty.
             $courses = local_catdup_get_courses($do->destination);
             $categories = local_catdup_get_courses($do->destination);
+            $USER = $DB->get_record('user', ['id' => $do->userid]);
             if (count($courses) > 0 || count($categories) > 0) {
-                email_to_user($do->userid, $do->userid, get_string('pluginname', 'local_catdup'),
+                email_to_user($USER, $USER, get_string('pluginname', 'local_catdup'),
                     'Category ' . $do->destination . 'is not empty..', 'Category ' . $do->destination . ' is not empty..');
-                $record = new stdClass;
+                $record = new \stdClass();
                 $record->id = $do->id;
                 $record->state = 3;
                 $record->timemodified = time();
@@ -60,12 +61,16 @@ class duplicate_task extends \core\task\scheduled_task {
 
                 continue;
             }
-            local_catdup_duplicate($do->origin, $do->destination);
-            $record = new stdClass;
+            $USER = $DB->get_record('user', ['id' => $do->userid]);
+            local_catdup_duplicate($do->origin, $do->destination, $USER, $do->extension);
+            $record = new \stdClass();
             $record->id = $do->id;
             $record->state = 3;
             $record->timemodified = time();
             $DB->update_record('local_catdup_tasks', $record);
+            email_to_user($USER, $USER, get_string('pluginname', 'local_catdup'),
+                    'Category ' . $do->origin . ' copied to ' . $do->destination,
+                    'Category ' . $do->origin . ' copied to ' . $do->destination);
         }
     }
 }

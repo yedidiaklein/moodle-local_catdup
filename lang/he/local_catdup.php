@@ -27,4 +27,4 @@ $string['pluginname'] = 'משכפל הקטגוריות';
 $string['origin'] = 'קטגוריית מקור';
 $string['destination'] = 'קטגוריית יעד';
 $string['taskinserted'] = 'בקשתך נכנסה לתור, דואר אלקטרוני יתקבל לכשתסתיים';
-
+$string['extension'] = 'סיומת השם הקצר של הקורסים החדשים';

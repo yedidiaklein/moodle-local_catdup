@@ -55,6 +55,10 @@ class cat_form extends moodleform {
         $mform->setType('destination', PARAM_INT);
         $mform->setDefault('destination', '' ); // Default value.
 
+        $mform->addElement('text', 'extension', get_string('extension', 'local_catdup'));
+        $mform->setType('extension', PARAM_RAW);
+        $mform->setDefault('extension', '_' . date("Y") ); // Default value.
+
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('pluginname', 'local_catdup'));
         $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
@@ -72,11 +76,12 @@ $mform = new cat_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot);
 } else if ($fromform = $mform->get_data()) {
-    require_once('locallib.php');
+    require_once( __DIR__ . '/locallib.php');
 
     $record = new stdClass;
     $record->origin = $fromform->origin;
     $record->destination = $fromform->destination;
+    $record->extension = $fromform->extension;
     $record->userid = $USER->id;
     $record->state = 1;
     $record->timecreated = time();

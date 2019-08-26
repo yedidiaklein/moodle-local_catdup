@@ -22,9 +22,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Category Duplicate';
+define('CLI_SCRIPT', true);
 
-$string['origin'] = 'Origin Category';
-$string['destination'] = 'Destination Category';
-$string['taskinserted'] = 'Your request was inserted into queue, You will get an email while done.';
-$string['extension'] = 'Extension of shortname of new courses.';
+require_once( __DIR__ . '/../../../config.php');
+require_once( __DIR__ . '/../locallib.php');
+
+$USER = $DB->get_record('user', ['id' => 2]);
+
+local_catdup_duplicate(2, 3, $USER);

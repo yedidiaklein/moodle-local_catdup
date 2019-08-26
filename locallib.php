@@ -36,31 +36,29 @@ function local_catdup_get_categories($catid) {
     return $categories;
 }
 
-function local_catdup_duplicate($origin, $destination) {
-    require_once('../../course/externallib.php');
+function local_catdup_duplicate($origin, $destination, $USER, $extension) {
+    global $CFG, $DB;
+    require_once( __DIR__ . '/../../course/externallib.php');
+    require_once( __DIR__ . '/../..//lib/coursecatlib.php');
     // Find courses in origin cat and duplicate them to destination.
     // Get list of courses.
     $courses = local_catdup_get_courses($origin);
     foreach ($courses as $course) {
-        core_course_external::duplicate_course($course->id, $course->fullname, $course->shortname, $destination, $course->visible);
+        core_course_external::duplicate_course($course->id,
+                                               $course->fullname,
+                                               $course->shortname . $extension,
+                                               $destination,
+                                               $course->visible);
     }
     // Get list of categories.
     $categories = local_catdup_get_categories($origin);
     foreach ($categories as $category) {
-        // Create new category in destination
-        // get info of destination.
-        $destcat = $DB->get_records('course_categories', ['id' => $destination]);
-        $record = new stdClass;
-        $record->name = $category->name;
-        $record->parent = $destination;
-        $record->depth = $destcat->depth + 1;
-        $record->timemodified = time();
-        $newcatid = $DB->insert_record('course_categories', $record);
-        // Take care of path of new cat.
-        $record->id = $newcatid;
-        $record->path = $destcat->path . '/' . $newcatid;
-        $DB->update_record('course_catyegories', $record);
-        local_catdup_duplicate($$category->id, $newcatid);
+        // Create new category in destination.
+        $data = new stdClass();
+        $data->name = $category->name;
+        $data->parent = $destination;
+        $newcat = coursecat::create($data);
+        local_catdup_duplicate($category->id, $newcat->id, $USER, $extension);
     }
 }
 
