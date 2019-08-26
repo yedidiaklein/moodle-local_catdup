@@ -47,13 +47,33 @@ class cat_form extends moodleform {
 
         $mform = $this->_form;
 
-        $mform->addElement('text', 'origin', get_string('origin', 'local_catdup'));
-        $mform->setType('origin', PARAM_INT);
-        $mform->setDefault('origin', '' ); // Default value.
+        $categories = $DB->get_records('course_categories', []);
+        foreach ($categories as $category) {
+            $cats[$category->id] = $category->name;
+        }
 
-        $mform->addElement('text', 'destination', get_string('destination', 'local_catdup'));
-        $mform->setType('destination', PARAM_INT);
-        $mform->setDefault('destination', '' ); // Default value.
+        foreach ($categories as $category) {
+            $path = explode('/', $category->path);
+            $catpath[$category->id] = '';
+            foreach ($path as $leaf) {
+                if ($leaf != '') {
+                    $catpath[$category->id] .= $cats[$leaf] . '/';
+                }
+            }
+        }
+
+        $select = $mform->addElement('select', 'origin', get_string('origin', 'local_catdup'), $catpath);
+
+        $categories = $DB->get_records_sql('SELECT cat.id, cat.name, course.id AS courseid
+                                            FROM {course_categories} cat
+                                            LEFT JOIN {course} course
+                                            ON cat.id = course.category
+                                            WHERE course.id is ?', [null]);
+        foreach ($categories as $category) {
+            $destcatpath[$category->id] = $catpath[$category->id];
+        }
+
+        $select = $mform->addElement('select', 'destination', get_string('destination', 'local_catdup'), $destcatpath);
 
         $mform->addElement('text', 'extension', get_string('extension', 'local_catdup'));
         $mform->setType('extension', PARAM_RAW);
