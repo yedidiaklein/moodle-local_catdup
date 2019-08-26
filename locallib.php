@@ -24,8 +24,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2019082600;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2016052300;      // Requires this Moodle version.
-$plugin->component = 'local_catdup';// Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_RC;
-$plugin->release = "1.0";
+function local_catdup_get_courses($catid) {
+    global $DB;
+    $courses = $DB->get_records('course', [ 'category' => $catid ]);
+    return $courses;
+}
+
+function local_catdup_get_categories($catid) {
+    global $DB;
+    $categories = $DB->get_records('course_categories', [ 'parent' => $catid ]);
+    return $categories;
+}
+

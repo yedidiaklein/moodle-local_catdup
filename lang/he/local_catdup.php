@@ -22,10 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+$string['pluginname'] = 'משכפל הקטגוריות';
 
-$plugin->version = 2019082600;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2016052300;      // Requires this Moodle version.
-$plugin->component = 'local_catdup';// Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_RC;
-$plugin->release = "1.0";
+$string['origin'] = 'קטגוריית מקור';
+$string['destination'] = 'קטגוריית יעד';
+$string['taskinserted'] = 'בקשתך נכנסה לתור, דואר אלקטרוני יתקבל לכשתסתיים';
+

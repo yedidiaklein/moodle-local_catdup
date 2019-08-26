@@ -22,10 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+$string['pluginname'] = 'Category Duplicate';
 
-$plugin->version = 2019082600;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2016052300;      // Requires this Moodle version.
-$plugin->component = 'local_catdup';// Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_RC;
-$plugin->release = "1.0";
+$string['origin'] = 'Origin Category';
+$string['destination'] = 'Destination Category';
+$string['taskinserted'] = 'Your request was inserted into queue, You will get an email while done.';
