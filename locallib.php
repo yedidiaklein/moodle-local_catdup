@@ -58,7 +58,10 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
         $data->name = $category->name;
         $data->parent = $destination;
         $newcat = coursecat::create($data);
-        local_catdup_duplicate($category->id, $newcat->id, $USER, $extension);
+        try {
+            local_catdup_duplicate($category->id, $newcat->id, $USER, $extension);
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
     }
 }
-
