@@ -44,6 +44,7 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
     // Get list of courses.
     $courses = local_catdup_get_courses($origin);
     foreach ($courses as $course) {
+        echo "Copying " . $course->id . " To Category " . $destination . "\n";
         core_course_external::duplicate_course($course->id,
                                                $course->fullname,
                                                $course->shortname . $extension,
@@ -57,6 +58,7 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
         $data = new stdClass();
         $data->name = $category->name;
         $data->parent = $destination;
+        echo "Creating Category " . $category->name . " in category " . $destination . "\n";
         $newcat = coursecat::create($data);
         try {
             local_catdup_duplicate($category->id, $newcat->id, $USER, $extension);
