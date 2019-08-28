@@ -53,7 +53,7 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
         'logs' => 0,
     );
     foreach ($courses as $course) {
-        echo "Copying " . $course->id . " To Category " . $destination . "\n";
+        echo "[catdup] Copying " . $course->id . " To Category " . $destination . "\n";
         try {
             core_course_external::duplicate_course($course->id,
                                                $course->fullname,
@@ -62,7 +62,7 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
                                                $course->visible);
 
         } catch (Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            echo '[catdup] Caught exception on duplicate_course : ' . $course->id . $e->getMessage() . "\n";
             // Drop the file temp table on failure here.
             $DB->execute('DROP table {backup_files_temp}', []);
         }
@@ -74,16 +74,16 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
         $data = new stdClass();
         $data->name = $category->name;
         $data->parent = $destination;
-        echo "Creating Category " . $category->name . " in category " . $destination . "\n";
+        echo "[catdup] Creating Category " . $category->name . " in category " . $destination . "\n";
         try {
             $newcat = coursecat::create($data);
         } catch (Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            echo '[catdup] Caught exception on create category : ' . $data->name . $e->getMessage() . "\n";
         }
         try {
             local_catdup_duplicate($category->id, $newcat->id, $USER, $extension);
         } catch (Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            echo '[catdup] Caught exception on catdup_duplicate: ' . $category->id . $newcat->id . $e->getMessage() . "\n";
         }
     }
 }
