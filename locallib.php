@@ -59,8 +59,7 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
                                                $course->fullname,
                                                $course->shortname . $extension,
                                                $destination,
-                                               $course->visible,
-                                               $options);
+                                               $course->visible);
 
         } catch (Exception $e) {
             echo 'Caught exception: ',  $e->getMessage(), "\n";
