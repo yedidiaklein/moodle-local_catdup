@@ -39,7 +39,7 @@ class duplicate_task extends \core\task\scheduled_task {
         global $DB;
         require_once( __DIR__ . '/../../locallib.php');
         require_once( __DIR__ . '/../../../../lib/classes/user.php');
-        $noreplyuser = core_user::get_noreply_user();
+        $noreplyuser = \core_user::get_noreply_user();
         // Get list of tasks.
         $todo = $DB->get_records('local_catdup_tasks', ['state' => 1]);
         foreach ($todo as $do) {
