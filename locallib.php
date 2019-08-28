@@ -45,11 +45,16 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
     $courses = local_catdup_get_courses($origin);
     foreach ($courses as $course) {
         echo "Copying " . $course->id . " To Category " . $destination . "\n";
-        core_course_external::duplicate_course($course->id,
+        try {
+            core_course_external::duplicate_course($course->id,
                                                $course->fullname,
                                                $course->shortname . $extension,
                                                $destination,
                                                $course->visible);
+
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
     }
     // Get list of categories.
     $categories = local_catdup_get_categories($origin);
@@ -59,7 +64,11 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
         $data->name = $category->name;
         $data->parent = $destination;
         echo "Creating Category " . $category->name . " in category " . $destination . "\n";
-        $newcat = coursecat::create($data);
+        try {
+            $newcat = coursecat::create($data);
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
         try {
             local_catdup_duplicate($category->id, $newcat->id, $USER, $extension);
         } catch (Exception $e) {
