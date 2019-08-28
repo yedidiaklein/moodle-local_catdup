@@ -24,8 +24,8 @@
 
 define('CLI_SCRIPT', true);
 
-require_once( __DIR__ . '/../../../config.php');
-require_once( __DIR__ . '/../locallib.php');
+require_once( __DIR__ . '/../../../../config.php');
+require_once( __DIR__ . '/../../locallib.php');
 
 $USER = $DB->get_record('user', ['id' => 2]);
 
