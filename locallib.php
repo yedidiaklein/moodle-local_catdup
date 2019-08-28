@@ -43,6 +43,15 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
     // Find courses in origin cat and duplicate them to destination.
     // Get list of courses.
     $courses = local_catdup_get_courses($origin);
+    $options = array(
+        'activities' => 1,
+        'blocks' => 1,
+        'filters' => 1,
+        'users' => 0,
+        'role_assignments' => 0,
+        'comments' => 0,
+        'logs' => 0,
+    );
     foreach ($courses as $course) {
         echo "Copying " . $course->id . " To Category " . $destination . "\n";
         try {
@@ -50,10 +59,13 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
                                                $course->fullname,
                                                $course->shortname . $extension,
                                                $destination,
-                                               $course->visible);
+                                               $course->visible,
+                                               $options);
 
         } catch (Exception $e) {
             echo 'Caught exception: ',  $e->getMessage(), "\n";
+            // Drop the file temp table on failure here.
+            $DB->execute('DROP table {backup_files_temp}', []);
         }
     }
     // Get list of categories.
