@@ -62,9 +62,9 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
                                                $course->visible);
 
         } catch (Exception $e) {
-            echo '[catdup] Caught exception on duplicate_course : ' . $course->id . $e->getMessage() . "\n";
-            // Drop the file temp table on failure here.
-            $DB->execute('DROP table {backup_files_temp}', []);
+            echo '[catdup] Caught exception on duplicate_course : ' . $course->id . " " . $e->getMessage() . "\n";
+            echo '[catdup] Sleeping for 30 seconds.' . "\n";
+            sleep(30);
         }
     }
     // Get list of categories.
