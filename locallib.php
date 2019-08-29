@@ -43,15 +43,6 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
     // Find courses in origin cat and duplicate them to destination.
     // Get list of courses.
     $courses = local_catdup_get_courses($origin);
-    $options = array(
-        'activities' => 1,
-        'blocks' => 1,
-        'filters' => 1,
-        'users' => 0,
-        'role_assignments' => 0,
-        'comments' => 0,
-        'logs' => 0,
-    );
     foreach ($courses as $course) {
         echo "[catdup] Copying " . $course->id . " To Category " . $destination . "\n";
         try {
