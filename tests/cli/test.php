@@ -27,6 +27,10 @@ define('CLI_SCRIPT', true);
 require_once( __DIR__ . '/../../../../config.php');
 require_once( __DIR__ . '/../../locallib.php');
 
-$USER = $DB->get_record('user', ['id' => 2]);
+if (count($argv) < 4) {
+    die("Usage: php test.php sourceCategoryId destinationCategoryId UserId \n");
+}
 
-local_catdup_duplicate(2, 15, $USER, '_test');
+$USER = $DB->get_record('user', ['id' => $argv[3]]);
+
+local_catdup_duplicate($argv[1], $argv[2], $USER, '_test');
