@@ -29,4 +29,4 @@ require_once( __DIR__ . '/../../locallib.php');
 
 $USER = $DB->get_record('user', ['id' => 2]);
 
-local_catdup_duplicate(2, 3, $USER);
+local_catdup_duplicate(2, 15, $USER, '_test');

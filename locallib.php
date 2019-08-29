@@ -55,16 +55,14 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
     foreach ($courses as $course) {
         echo "[catdup] Copying " . $course->id . " To Category " . $destination . "\n";
         try {
-            core_course_external::duplicate_course($course->id,
-                                               $course->fullname,
-                                               $course->shortname . $extension,
-                                               $destination,
-                                               $course->visible);
+            local_catdup_duplicate_course($course->id,
+                                            $course->fullname,
+                                            $course->shortname . $extension,
+                                            $destination,
+                                            $course->visible);
 
         } catch (Exception $e) {
             echo '[catdup] Caught exception on duplicate_course : ' . $course->id . " " . $e->getMessage() . "\n";
-            echo '[catdup] Sleeping for 30 seconds.' . "\n";
-            sleep(30);
         }
     }
     // Get list of categories.
@@ -85,5 +83,81 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
         } catch (Exception $e) {
             echo '[catdup] Caught exception on catdup_duplicate: ' . $category->id . $newcat->id . $e->getMessage() . "\n";
         }
+    }
+}
+
+function local_catdup_duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible = 1) {
+    global $CFG;
+    require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+    require_once($CFG->dirroot . '/backup/controller/backup_controller.class.php');
+    require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+    require_once($CFG->dirroot . '/course/lib.php');
+
+    $sourcecourse = $courseid;
+
+    $admin = get_admin();
+
+    $options = array(
+        'users' => 0,
+        'role_assignments' => 0,
+    );
+
+    // Backup.
+    $bc = new \backup_controller(\backup::TYPE_1COURSE, $sourcecourse,
+        \backup::FORMAT_MOODLE, \backup::INTERACTIVE_NO, \backup::MODE_SAMESITE, $admin->id);
+
+    foreach ($options as $name => $value) {
+        if ($setting = $bc->get_plan()->get_setting($name)) {
+            $bc->get_plan()->get_setting($name)->set_value($value);
+        }
+    }
+
+    $outcome = $bc->execute_plan();
+    $results = $bc->get_results();
+    $file = $results['backup_destination'];
+
+    $backupdir = basename($bc->get_plan()->get_basepath());
+    $bc->destroy();
+    unset($bc);
+
+    // Restore.
+    if (!file_exists($CFG->dataroot . '/temp/backup/' . $backupdir . "/moodle_backup.xml")) {
+        $file->extract_to_pathname(get_file_packer('application/vnd.moodle.backup'), $CFG->dataroot.'/temp/backup/'.$backupdir);
+    }
+
+    $data = new \stdClass();
+    $data->category = $categoryid;
+    $data->shortname = $shortname;
+    $data->fullname = $fullname;
+    $data->visible = $visible;
+
+    // Create empty new course.
+    $newcourse = create_course($data);
+    $destcourse = $newcourse->id;
+
+    if (file_exists($CFG->dataroot . '/temp/backup/' . $backupdir . '/course/course.xml')) {
+        $controller = new \restore_controller($backupdir,
+                                        $destcourse,
+                                        \backup::INTERACTIVE_NO,
+                                        \backup::MODE_SAMESITE,
+                                        $admin->id,
+                                        \backup::TARGET_NEW_COURSE);
+
+        foreach ($options as $name => $value) {
+            $setting = $controller->get_plan()->get_setting($name);
+            if ($setting->get_status() == backup_setting::NOT_LOCKED) {
+                $setting->set_value($value);
+            }
+        }
+
+        if (!$controller->execute_precheck()) {
+            if ($controller->get_status() !== \backup::STATUS_AWAITING) {
+                die;
+            }
+        }
+
+        $controller->execute_plan();
+        rebuild_course_cache($destcourse);
+        $file->delete();
     }
 }
