@@ -9,6 +9,6 @@ Moodle plugin for duplicating category and all its sub categories and courses to
 - Go to your Moodle notification page and install it.
 - You can access the plugin at https://[moodle]/local/catdup/ and choose source and destination categories.
 
-Enjoy and fill issues in gihub,
+Enjoy and create issues in github for any bug or request...
 
 --Yedidia
