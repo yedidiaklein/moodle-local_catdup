@@ -34,3 +34,10 @@ if (count($argv) < 4) {
 $USER = $DB->get_record('user', ['id' => $argv[3]]);
 
 local_catdup_duplicate($argv[1], $argv[2], $USER, '_test');
+
+require_once( __DIR__ . '/../../../../lib/classes/user.php');
+$noreplyuser = \core_user::get_noreply_user();
+
+email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),
+'Category ' . $argv[1] . ' copied to ' . $argv[2] , 'Category ' . $argv[1] . ' copied to ' . $argv[2]);
+
