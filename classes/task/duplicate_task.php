@@ -65,7 +65,7 @@ class duplicate_task extends \core\task\scheduled_task {
             }
             $USER = $DB->get_record('user', ['id' => $do->userid]);
             try {
-                local_catdup_duplicate($do->origin, $do->destination, $USER, $do->extension);
+                local_catdup_duplicate($do->origin, $do->destination, $USER, $do->extension, $do->oldextension);
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
             }

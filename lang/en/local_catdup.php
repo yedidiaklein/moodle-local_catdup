@@ -27,4 +27,5 @@ $string['pluginname'] = 'Category Duplicate';
 $string['origin'] = 'Origin Category';
 $string['destination'] = 'Destination Category';
 $string['taskinserted'] = 'Your request was inserted into queue, You will get an email while done.';
-$string['extension'] = 'Extension of shortname of new courses.';
+$string['extension'] = 'Extension of new courses.';
+$string['oldextension'] = 'Extension of old courses.';

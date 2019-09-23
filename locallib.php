@@ -36,7 +36,7 @@ function local_catdup_get_categories($catid) {
     return $categories;
 }
 
-function local_catdup_duplicate($origin, $destination, $USER, $extension) {
+function local_catdup_duplicate($origin, $destination, $USER, $extension, $oldextension) {
     global $CFG, $DB;
     require_once( __DIR__ . '/../../course/externallib.php');
     require_once( __DIR__ . '/../..//lib/coursecatlib.php');
@@ -50,6 +50,8 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
                                             $course->fullname,
                                             $course->shortname . $extension,
                                             $destination,
+                                            $oldextension,
+                                            $extension,
                                             $course->visible);
 
         } catch (Exception $e) {
@@ -70,15 +72,15 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension) {
             echo '[catdup] Caught exception on create category : ' . $data->name . $e->getMessage() . "\n";
         }
         try {
-            local_catdup_duplicate($category->id, $newcat->id, $USER, $extension);
+            local_catdup_duplicate($category->id, $newcat->id, $USER, $extension, $oldextension);
         } catch (Exception $e) {
             echo '[catdup] Caught exception on catdup_duplicate: ' . $category->id . $newcat->id . $e->getMessage() . "\n";
         }
     }
 }
 
-function local_catdup_duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible = 1) {
-    global $CFG;
+function local_catdup_duplicate_course($courseid, $fullname, $shortname, $categoryid, $oldextension, $extension, $visible = 1) {
+    global $CFG, $DB;
     require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
     require_once($CFG->dirroot . '/backup/controller/backup_controller.class.php');
     require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
@@ -148,6 +150,15 @@ function local_catdup_duplicate_course($courseid, $fullname, $shortname, $catego
         }
 
         $controller->execute_plan();
+
+        // Rename fullname and shortname.
+        $torename = $DB->get_record('course', ['id' => $destcourse]);
+        $newfullname = preg_replace("/(\w+) copy (\d+)/", '$1', $torename->fullname);
+        $newfullname = str_replace($oldextension, $extension, $newfullname);
+        $record = new \stdClass();
+        $record->id = $destcourse;
+        $record->fullname = $newfullname;
+        $renamed = $DB->update_record('course', $record);
         rebuild_course_cache($destcourse);
         $file->delete();
     }

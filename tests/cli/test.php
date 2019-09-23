@@ -33,7 +33,7 @@ if (count($argv) < 4) {
 
 $USER = $DB->get_record('user', ['id' => $argv[3]]);
 
-local_catdup_duplicate($argv[1], $argv[2], $USER, '_test');
+local_catdup_duplicate($argv[1], $argv[2], $USER, '_test', '_oldtest');
 
 require_once( __DIR__ . '/../../../../lib/classes/user.php');
 $noreplyuser = \core_user::get_noreply_user();

@@ -24,8 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2019092301;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2016052300;      // Requires this Moodle version.
-$plugin->component = 'local_catdup';// Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_RC;
-$plugin->release = "1.1";
+if ($hassiteconfig) {
+    $pluginname = get_string('pluginname', 'local_catdup');
+    $ADMIN->add('server', new admin_externalpage('local_catdup',
+            $pluginname,
+            new moodle_url('/local/catdup/index.php')));
+}

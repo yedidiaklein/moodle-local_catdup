@@ -11,6 +11,7 @@
         <FIELD NAME="origin" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="destination" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="extension" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="oldextension" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="state" TYPE="number" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="1 - in queue, 2 - in work, 3 - ready"/>
         <FIELD NAME="timecreated" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>
