@@ -28,7 +28,7 @@ require_login();
 defined('MOODLE_INTERNAL') || die();
 
 if (!is_siteadmin()) {
-    echo "Access Denied";
+    redirect($CFG->wwwroot, "Access Denied");
 }
 
 require_once("$CFG->libdir/formslib.php");
