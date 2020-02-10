@@ -8,14 +8,14 @@ You simply cretae a new category for the new year, choose the source and target 
 all courses and categories from the source to the destination.
 The whole work is done asynchronously, So you are not waitng in front of the system - it happens in the background.
 
-##Install
+## Install
 - cd to your [moodle]/local/ directory
 - git clone https://github.com/yedidiaklein/moodle-local_catdup.git catdup
 - Or Download from moodle plugin and unzip in your moodle local directory.
 - Go to your Moodle notification page and install it.
 - You can access the plugin at https://[moodle]/local/catdup/ and choose source and destination categories.
 
-##How to use
+## How to use
 - In "Site Administration" click on Courses tab.
 - Click on "Category Duplicate" in courses section.
 - Then in the screen that appear, choose source and destination categories
