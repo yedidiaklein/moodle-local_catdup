@@ -41,7 +41,7 @@ $PAGE->set_pagelayout('standard');
 
 $PAGE->navbar->add(get_string('pluginname', 'local_catdup'), new moodle_url('/local/catdup'));
 
-class cat_form extends moodleform {
+class local_catdup_main_form extends moodleform {
     public function definition() {
         global $DB;
 
@@ -95,7 +95,7 @@ class cat_form extends moodleform {
 
 }
 
-$mform = new cat_form();
+$mform = new local_catdup_main_form();
 
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot);
