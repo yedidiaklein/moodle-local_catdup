@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
     $pluginname = get_string('pluginname', 'local_catdup');
-    $ADMIN->add('server', new admin_externalpage('local_catdup',
+    $ADMIN->add('courses', new admin_externalpage('local_catdup',
             $pluginname,
             new moodle_url('/local/catdup/index.php')));
 }
