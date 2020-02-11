@@ -2,7 +2,7 @@
 
 Moodle plugin for duplicating category and all its sub categories and courses to a new empty category.
 
-##Introduction
+## Introduction
 This plugin can be usefull in cases that a category of courses has to be duplicated each year or in any other frequency.
 You simply cretae a new category for the new year, choose the source and target categories - and the mechanism simply copy 
 all courses and categories from the source to the destination.
