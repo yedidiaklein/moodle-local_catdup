@@ -23,6 +23,7 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_once( __DIR__ . '/classes/local_catdup_main_form.php');
 require_login();
 
 defined('MOODLE_INTERNAL') || die();
@@ -31,8 +32,6 @@ if (!is_siteadmin()) {
     redirect($CFG->wwwroot, "Access Denied");
 }
 
-require_once("$CFG->libdir/formslib.php");
-
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('pluginname', 'local_catdup'));
 $PAGE->set_title(get_string('pluginname', 'local_catdup'));
@@ -40,60 +39,6 @@ $PAGE->set_url('/local/catdup');
 $PAGE->set_pagelayout('standard');
 
 $PAGE->navbar->add(get_string('pluginname', 'local_catdup'), new moodle_url('/local/catdup'));
-
-class local_catdup_main_form extends moodleform {
-    public function definition() {
-        global $DB;
-
-        $mform = $this->_form;
-
-        $categories = $DB->get_records('course_categories', []);
-        foreach ($categories as $category) {
-            $cats[$category->id] = $category->name;
-        }
-
-        foreach ($categories as $category) {
-            $path = explode('/', $category->path);
-            $catpath[$category->id] = '';
-            foreach ($path as $leaf) {
-                if ($leaf != '') {
-                    $catpath[$category->id] .= $cats[$leaf] . '/';
-                }
-            }
-        }
-
-        $select = $mform->addElement('select', 'origin', get_string('origin', 'local_catdup'), $catpath);
-
-        $categories = $DB->get_records_sql('SELECT cat.id, cat.name, course.id AS courseid
-                                            FROM {course_categories} cat
-                                            LEFT JOIN {course} course
-                                            ON cat.id = course.category
-                                            WHERE course.id is ?', [null]);
-        foreach ($categories as $category) {
-            $destcatpath[$category->id] = $catpath[$category->id];
-        }
-
-        $select = $mform->addElement('select', 'destination', get_string('destination', 'local_catdup'), $destcatpath);
-
-        $mform->addElement('text', 'extension', get_string('extension', 'local_catdup'));
-        $mform->setType('extension', PARAM_RAW);
-        $mform->setDefault('extension', '_' . date("Y") ); // Default value.
-
-        $mform->addElement('text', 'oldextension', get_string('oldextension', 'local_catdup'));
-        $mform->setType('oldextension', PARAM_RAW);
-        $mform->setDefault('oldextension', '_' . (date("Y") - 1) ); // Default value.
-
-        $buttonarray = array();
-        $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('pluginname', 'local_catdup'));
-        $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
-        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
-    }
-
-    public function validation($data, $files) {
-        return array();
-    }
-
-}
 
 $mform = new local_catdup_main_form();
 
