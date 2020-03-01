@@ -22,61 +22,35 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_catdup\task;
 defined('MOODLE_INTERNAL') || die();
 /**
  * Class for duplicating categories task.
  * @copyright  2019 Yedidia Klein OpenApp Israel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class duplicate_task extends \core\task\scheduled_task {
-    public function get_name() {
-        // Shown in admin screens.
-        return get_string('pluginname', 'local_catdup');
-    }
+class duplicate_task extends \core\task\adhoc_task {
 
     public function execute() {
         global $DB;
         require_once( __DIR__ . '/../../locallib.php');
         require_once( __DIR__ . '/../../../../lib/classes/user.php');
         $noreplyuser = \core_user::get_noreply_user();
-        // Get list of tasks.
-        $todo = $DB->get_records('local_catdup_tasks', ['state' => 1]);
-        foreach ($todo as $do) {
-            $record = new \stdClass();
-            $record->id = $do->id;
-            $record->state = 2;
-            $record->timemodified = time();
-            $DB->update_record('local_catdup_tasks', $record);
-            // First of all check that destination category is empty.
-            $courses = local_catdup_get_courses($do->destination);
-            $categories = local_catdup_get_courses($do->destination);
-            $USER = $DB->get_record('user', ['id' => $do->userid]);
-            if (count($courses) > 0 || count($categories) > 0) {
-                email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),
-                    'Category ' . $do->destination . 'is not empty..', 'Category ' . $do->destination . ' is not empty..');
-                $record = new \stdClass();
-                $record->id = $do->id;
-                $record->state = 3;
-                $record->timemodified = time();
-                $DB->update_record('local_catdup_tasks', $record);
-
-                continue;
-            }
-            $USER = $DB->get_record('user', ['id' => $do->userid]);
-            try {
-                local_catdup_duplicate($do->origin, $do->destination, $USER, $do->extension, $do->oldextension);
-            } catch (Exception $e) {
-                echo 'Caught exception: ',  $e->getMessage(), "\n";
-            }
-            $record = new \stdClass();
-            $record->id = $do->id;
-            $record->state = 3;
-            $record->timemodified = time();
-            $DB->update_record('local_catdup_tasks', $record);
+        $data = $this->get_custom_data();
+        $courses = local_catdup_get_courses($data->destination);
+        $categories = local_catdup_get_courses($data->destination);
+        $USER = $DB->get_record('user', ['id' => $data->userid]);
+        if (count($courses) > 0 || count($categories) > 0) {
             email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),
-                    'Category ' . $do->origin . ' copied to ' . $do->destination,
-                    'Category ' . $do->origin . ' copied to ' . $do->destination);
+                'Category ' . $data->destination . 'is not empty..', 'Category ' . $data->destination . ' is not empty..');
+            return;
         }
+        try {
+            local_catdup_duplicate($data->origin, $data->destination, $USER, $data->extension, $data->oldextension);
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+        }
+        email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),
+                'Category ' . $data->origin . ' copied to ' . $data->destination,
+                'Category ' . $data->origin . ' copied to ' . $data->destination);
     }
 }

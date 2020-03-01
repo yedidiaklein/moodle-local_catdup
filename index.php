@@ -24,6 +24,7 @@
 
 require_once( __DIR__ . '/../../config.php');
 require_once( __DIR__ . '/classes/local_catdup_main_form.php');
+require_once( __DIR__ . '/classes/task/duplicate_task.php');
 require_login();
 
 defined('MOODLE_INTERNAL') || die();
@@ -47,17 +48,16 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
     require_once( __DIR__ . '/locallib.php');
 
-    $record = new stdClass;
-    $record->origin = $fromform->origin;
-    $record->destination = $fromform->destination;
-    $record->extension = $fromform->extension;
-    $record->oldextension = $fromform->oldextension;
-    $record->userid = $USER->id;
-    $record->state = 1;
-    $record->timecreated = time();
-
-    $id = $DB->insert_record('local_catdup_tasks', $record);
-    if ($id) {
+    $duptask = new duplicate_task();
+    if ($duptask) {
+        $duptask->set_custom_data(array(
+            'origin' => $fromform->origin,
+            'destination' => $fromform->destination,
+            'extension' => $fromform->extension,
+            'oldextension' => $fromform->oldextension,
+            'userid' => $USER->id
+        ));
+        \core\task\manager::queue_adhoc_task($duptask);
         $answer = get_string('taskinserted', 'local_catdup') . '(' . $id . ')';
     }
 
