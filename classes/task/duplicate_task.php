@@ -50,7 +50,7 @@ class duplicate_task extends \core\task\adhoc_task {
             echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
         email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),
-            get_string('category') . ' ' . $data->origin . ' ' . get_string('pluginname', 'copiedto') . ' ' . $data->destination,
-            get_string('category') . ' ' . $data->origin . ' ' . get_string('pluginname', 'copiedto') . ' ' . $data->destination);
+            get_string('category') . ' ' . $data->origin . ' ' . get_string('copiedto', 'local_catdup') . ' ' . $data->destination,
+            get_string('category') . ' ' . $data->origin . ' ' . get_string('copiedto', 'local_catdup') . ' ' . $data->destination);
     }
 }

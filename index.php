@@ -58,7 +58,7 @@ if ($mform->is_cancelled()) {
             'userid' => $USER->id
         ));
         \core\task\manager::queue_adhoc_task($duptask);
-        $answer = get_string('taskinserted', 'local_catdup') . '(' . $id . ')';
+        $answer = get_string('taskinserted', 'local_catdup');
     }
 
     redirect($CFG->wwwroot . '/local/catdup/', $answer);
