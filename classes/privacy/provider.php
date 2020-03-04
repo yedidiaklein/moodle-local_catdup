@@ -22,14 +22,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'משכפל הקטגוריות';
+namespace local_catdup\privacy;
+defined('MOODLE_INTERNAL') || die();
+class provider implements
+    // This plugin does not store any personal user data.
+    \core_privacy\local\metadata\null_provider {
 
-$string['origin'] = 'קטגוריית מקור';
-$string['destination'] = 'קטגוריית יעד';
-$string['taskinserted'] = 'בקשתך נכנסה לתור, דואר אלקטרוני יתקבל לכשתסתיים';
-$string['extension'] = 'סיומת של הקורסים החדשים';
-$string['oldextension'] = 'סיומת של הקורסים הישנים';
-$string['notempty'] = 'איננו ריק';
-$string['copiedto'] = 'הועתק ל- ';
-$string['accessdenied'] = 'הגישה נדחתה';
-$string['privacy:metadata'] = 'משכפל הקטגוריות אינו שומר נתונים אישיים.';
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}
