@@ -68,7 +68,5 @@ if ($mform->is_cancelled()) {
     $mform->display();
 
 }
-// elisheva test - to dalete!
-echo get_string('category');
-//
+
 echo $OUTPUT->footer();
