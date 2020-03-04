@@ -30,7 +30,7 @@ require_login();
 defined('MOODLE_INTERNAL') || die();
 
 if (!is_siteadmin()) {
-    redirect($CFG->wwwroot, "Access Denied");
+    redirect($CFG->wwwroot, get_string('accessdenied', 'local_catdup'));
 }
 
 $PAGE->set_context(context_system::instance());
@@ -68,5 +68,7 @@ if ($mform->is_cancelled()) {
     $mform->display();
 
 }
-
+// elisheva test - to dalete!
+echo get_string('category');
+//
 echo $OUTPUT->footer();

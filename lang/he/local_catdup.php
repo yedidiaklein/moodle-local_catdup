@@ -29,3 +29,6 @@ $string['destination'] = 'קטגוריית יעד';
 $string['taskinserted'] = 'בקשתך נכנסה לתור, דואר אלקטרוני יתקבל לכשתסתיים';
 $string['extension'] = 'סיומת של הקורסים החדשים';
 $string['oldextension'] = 'סיומת של הקורסים הישנים';
+$string['notempty'] = 'איננו ריק';
+$string['copiedto'] = 'הועתק ל- ';
+$string['accessdenied'] = 'הגישה נדחתה';

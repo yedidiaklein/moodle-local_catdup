@@ -41,7 +41,7 @@ class duplicate_task extends \core\task\adhoc_task {
         $USER = $DB->get_record('user', ['id' => $data->userid]);
         if (count($courses) > 0 || count($categories) > 0) {
             email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),
-                'Category ' . $data->destination . 'is not empty..', 'Category ' . $data->destination . ' is not empty..');
+                get_string('category') . ' ' . $data->destination . ' ' . get_string('notempty', 'local_catdup'), get_string('category') . ' ' . $data->destination . ' ' . get_string('notempty', 'local_catdup') );
             return;
         }
         try {
@@ -50,7 +50,7 @@ class duplicate_task extends \core\task\adhoc_task {
             echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
         email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),
-                'Category ' . $data->origin . ' copied to ' . $data->destination,
-                'Category ' . $data->origin . ' copied to ' . $data->destination);
+            get_string('category') . ' ' . $data->origin . ' ' . get_string('pluginname', 'copiedto') . ' ' . $data->destination,
+            get_string('category') . ' ' . $data->origin . ' ' . get_string('pluginname', 'copiedto') . ' ' . $data->destination);
     }
 }

@@ -29,3 +29,6 @@ $string['destination'] = 'Destination Category';
 $string['taskinserted'] = 'Your request was inserted into queue, You will get an email while done.';
 $string['extension'] = 'Extension of new courses.';
 $string['oldextension'] = 'Extension of old courses.';
+$string['notempty'] = 'is not empty.';
+$string['copiedto'] = 'copied to';
+$string['accessdenied'] = 'Access Denied';
