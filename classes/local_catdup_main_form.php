@@ -27,7 +27,7 @@ require_once("$CFG->libdir/formslib.php");
 
 class local_catdup_main_form extends moodleform {
     public function definition() {
-        global $DB;
+        global $DB, $CFG;
 
         $mform = $this->_form;
 
@@ -48,11 +48,12 @@ class local_catdup_main_form extends moodleform {
 
         $select = $mform->addElement('select', 'origin', get_string('origin', 'local_catdup'), $catpath);
 
+        // Find empty categories.
         $categories = $DB->get_records_sql('SELECT cat.id, cat.name, course.id AS courseid
                                             FROM {course_categories} cat
                                             LEFT JOIN {course} course
                                             ON cat.id = course.category
-                                            WHERE course.id is ?', [null]);
+                                            WHERE course.id IS NULL');
         foreach ($categories as $category) {
             $destcatpath[$category->id] = $catpath[$category->id];
         }
