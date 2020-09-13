@@ -48,7 +48,7 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
     require_once( __DIR__ . '/locallib.php');
 
-    $duptask = new duplicate_task();
+    $duptask = new \local_catdup\task\duplicate_task();
     if ($duptask) {
         $duptask->set_custom_data(array(
             'origin' => $fromform->origin,

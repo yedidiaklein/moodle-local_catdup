@@ -21,7 +21,7 @@
  * @copyright 2019 OpenApp By Yedidia Klein http://openapp.co.il
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+namespace local_catdup\task;
 defined('MOODLE_INTERNAL') || die();
 /**
  * Class for duplicating categories task.
