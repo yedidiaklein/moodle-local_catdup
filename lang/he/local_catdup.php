@@ -33,3 +33,7 @@ $string['notempty'] = 'איננו ריק';
 $string['copiedto'] = 'הועתק ל- ';
 $string['accessdenied'] = 'הגישה נדחתה';
 $string['privacy:metadata'] = 'משכפל הקטגוריות אינו שומר נתונים אישיים.';
+$string['selectdestination'] = 'בחרו קטגוריית יעד';
+$string['selectorigin'] = 'בחרו קטגוריית מקור';
+
+

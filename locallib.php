@@ -154,7 +154,11 @@ function local_catdup_duplicate_course($courseid, $fullname, $shortname, $catego
         // Rename fullname and shortname.
         $torename = $DB->get_record('course', ['id' => $destcourse]);
         $newfullname = preg_replace("/(\w+) copy (\d+)/", '$1', $torename->fullname);
-        $newfullname = str_replace($oldextension, $extension, $newfullname);
+        if ($oldextension != '') {
+            $newfullname = str_replace($oldextension, $extension, $newfullname);
+        } else {
+            $newfullname = $newfullname . $extension;
+        }
         $record = new \stdClass();
         $record->id = $destcourse;
         $record->fullname = $newfullname;

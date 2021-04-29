@@ -39,6 +39,10 @@ class duplicate_task extends \core\task\adhoc_task {
         $courses = local_catdup_get_courses($data->destination);
         $categories = local_catdup_get_courses($data->destination);
         $USER = $DB->get_record('user', ['id' => $data->userid]);
+        echo '*******************';
+        print_r($data);
+        print_r($courses);
+        echo '*******************';
         if (count($courses) > 0 || count($categories) > 0) {
             email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),
                 get_string('category') . ' ' . $data->destination . ' ' . get_string('notempty', 'local_catdup'), get_string('category') . ' ' . $data->destination . ' ' . get_string('notempty', 'local_catdup') );

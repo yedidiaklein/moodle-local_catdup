@@ -75,7 +75,13 @@ class local_catdup_main_form extends moodleform {
     }
 
     public function validation($data, $files) {
-        return array();
+        $errors = array();
+        if (empty($data['origin'])) {
+            $errors['origin'] = get_string('selectorigin', 'local_catdup');
+        }
+        if (empty($data['destination'])) {
+            $errors['destination'] = get_string('selectdestination', 'local_catdup');
+        }
+        return $errors;
     }
-
 }

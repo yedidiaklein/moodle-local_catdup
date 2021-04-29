@@ -33,3 +33,5 @@ $string['notempty'] = 'is not empty.';
 $string['copiedto'] = 'copied to';
 $string['accessdenied'] = 'Access Denied';
 $string['privacy:metadata'] = 'The catdup plugin does not store any personal data.';
+$string['selectdestination'] = 'Select Destination Category';
+$string['selectorigin'] = 'Select Origin Category';

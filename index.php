@@ -39,6 +39,8 @@ $PAGE->set_title(get_string('pluginname', 'local_catdup'));
 $PAGE->set_url('/local/catdup');
 $PAGE->set_pagelayout('standard');
 
+$PAGE->navbar->add(get_string('administrationsite'), new moodle_url('/admin/search.php'));
+$PAGE->navbar->add(get_string('courses'), new moodle_url('/admin/search.php#linkcourses'));
 $PAGE->navbar->add(get_string('pluginname', 'local_catdup'), new moodle_url('/local/catdup'));
 
 $mform = new local_catdup_main_form();
