@@ -39,7 +39,9 @@ function local_catdup_get_categories($catid) {
 function local_catdup_duplicate($origin, $destination, $USER, $extension, $oldextension) {
     global $CFG, $DB;
     require_once( __DIR__ . '/../../course/externallib.php');
-    require_once( __DIR__ . '/../..//lib/coursecatlib.php');
+    //for higher version
+    //require_once( __DIR__ . '/../../lib/coursecatlib.php');
+    require_once( __DIR__ . '/../../course/classes/category.php');
     // Find courses in origin cat and duplicate them to destination.
     // Get list of courses.
     $courses = local_catdup_get_courses($origin);
@@ -67,7 +69,9 @@ function local_catdup_duplicate($origin, $destination, $USER, $extension, $oldex
         $data->parent = $destination;
         echo "[catdup] Creating Category " . $category->name . " in category " . $destination . "\n";
         try {
-            $newcat = coursecat::create($data);
+            //for higher version
+            //$newcat = coursecat::create($data);
+            $newcat = core_course_category::create($data);
         } catch (Exception $e) {
             echo '[catdup] Caught exception on create category : ' . $data->name . $e->getMessage() . "\n";
         }
@@ -85,6 +89,7 @@ function local_catdup_duplicate_course($courseid, $fullname, $shortname, $catego
     require_once($CFG->dirroot . '/backup/controller/backup_controller.class.php');
     require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
     require_once($CFG->dirroot . '/course/lib.php');
+
 
     $sourcecourse = $courseid;
 
