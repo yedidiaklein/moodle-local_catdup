@@ -48,7 +48,7 @@ $mform = new local_catdup_main_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot);
 } else if ($fromform = $mform->get_data()) {
-    require_once( __DIR__ . '/locallib.php');
+    require_once( __DIR__ . '/lib.php');
 
     $duptask = new \local_catdup\task\duplicate_task();
     if ($duptask) {

@@ -25,7 +25,7 @@
 define('CLI_SCRIPT', true);
 
 require_once( __DIR__ . '/../../../../config.php');
-require_once( __DIR__ . '/../../locallib.php');
+require_once( __DIR__ . '/../../lib.php');
 
 if (count($argv) < 4) {
     die("Usage: php test.php sourceCategoryId destinationCategoryId UserId \n");
