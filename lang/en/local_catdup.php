@@ -26,9 +26,9 @@ $string['pluginname'] = 'Category Duplicate';
 
 $string['origin'] = 'Origin Category';
 $string['destination'] = 'Destination Category';
+$string['destinationinsideorigin'] = 'Destination category cannot be the origin category or inside it.';
 $string['taskinserted'] = 'Your request was inserted into queue, You will get an email while done.';
-$string['extension'] = 'Extension of new courses.';
-$string['oldextension'] = 'Extension of old courses.';
+$string['extension'] = 'Suffix for new courses\' short names.';
 $string['notempty'] = 'is not empty.';
 $string['copiedto'] = 'copied to';
 $string['accessdenied'] = 'Access Denied';

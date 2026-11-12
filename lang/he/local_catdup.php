@@ -26,14 +26,13 @@ $string['pluginname'] = 'משכפל הקטגוריות';
 
 $string['origin'] = 'קטגוריית מקור';
 $string['destination'] = 'קטגוריית יעד';
+$string['destinationinsideorigin'] = 'קטגוריית היעד לא יכולה להיות קטגוריית המקור או להימצא בתוכה.';
 $string['taskinserted'] = 'בקשתך נכנסה לתור, דואר אלקטרוני יתקבל לכשתסתיים';
-$string['extension'] = 'סיומת של הקורסים החדשים';
-$string['oldextension'] = 'סיומת של הקורסים הישנים';
+$string['extension'] = 'סיומת לשם הקצר של הקורסים החדשים';
 $string['notempty'] = 'איננו ריק';
 $string['copiedto'] = 'הועתק ל- ';
 $string['accessdenied'] = 'הגישה נדחתה';
 $string['privacy:metadata'] = 'משכפל הקטגוריות אינו שומר נתונים אישיים.';
 $string['selectdestination'] = 'בחרו קטגוריית יעד';
 $string['selectorigin'] = 'בחרו קטגוריית מקור';
-
 

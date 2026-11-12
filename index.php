@@ -25,23 +25,12 @@
 require_once( __DIR__ . '/../../config.php');
 require_once( __DIR__ . '/classes/local_catdup_main_form.php');
 require_once( __DIR__ . '/classes/task/duplicate_task.php');
-require_login();
+require_once($CFG->libdir . '/adminlib.php');
 
-defined('MOODLE_INTERNAL') || die();
+admin_externalpage_setup('local_catdup');
 
-if (!is_siteadmin()) {
-    redirect($CFG->wwwroot, get_string('accessdenied', 'local_catdup'));
-}
-
-$PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('pluginname', 'local_catdup'));
 $PAGE->set_title(get_string('pluginname', 'local_catdup'));
-$PAGE->set_url('/local/catdup');
-$PAGE->set_pagelayout('standard');
-
-$PAGE->navbar->add(get_string('administrationsite'), new moodle_url('/admin/search.php'));
-$PAGE->navbar->add(get_string('courses'), new moodle_url('/admin/search.php#linkcourses'));
-$PAGE->navbar->add(get_string('pluginname', 'local_catdup'), new moodle_url('/local/catdup'));
 
 $mform = new local_catdup_main_form();
 
@@ -56,7 +45,6 @@ if ($mform->is_cancelled()) {
             'origin' => $fromform->origin,
             'destination' => $fromform->destination,
             'extension' => $fromform->extension,
-            'oldextension' => $fromform->oldextension,
             'userid' => $USER->id
         ));
         \core\task\manager::queue_adhoc_task($duptask);

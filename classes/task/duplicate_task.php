@@ -37,7 +37,7 @@ class duplicate_task extends \core\task\adhoc_task {
         $noreplyuser = \core_user::get_noreply_user();
         $data = $this->get_custom_data();
         $courses = local_catdup_get_courses($data->destination);
-        $categories = local_catdup_get_courses($data->destination);
+        $categories = local_catdup_get_categories($data->destination);
         $USER = $DB->get_record('user', ['id' => $data->userid]);
         echo '*******************';
         print_r($data);
@@ -49,8 +49,8 @@ class duplicate_task extends \core\task\adhoc_task {
             return;
         }
         try {
-            local_catdup_duplicate($data->origin, $data->destination, $USER, $data->extension, $data->oldextension);
-        } catch (Exception $e) {
+            local_catdup_duplicate($data->origin, $data->destination, $USER, $data->extension);
+        } catch (\Exception $e) {
             echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
         email_to_user($USER, $noreplyuser, get_string('pluginname', 'local_catdup'),

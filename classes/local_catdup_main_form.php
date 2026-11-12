@@ -48,12 +48,13 @@ class local_catdup_main_form extends moodleform {
 
         $select = $mform->addElement('select', 'origin', get_string('origin', 'local_catdup'), $catpath);
 
-        // Find empty categories.
-        $categories = $DB->get_records_sql('SELECT cat.id, cat.name, course.id AS courseid
-                                            FROM {course_categories} cat
-                                            LEFT JOIN {course} course
-                                            ON cat.id = course.category
-                                            WHERE course.id IS NULL');
+        // Find empty categories (no courses and no subcategories).
+        $categories = $DB->get_records_sql('SELECT cat.id, cat.name
+                                              FROM {course_categories} cat
+                                             WHERE NOT EXISTS (SELECT 1 FROM {course} c WHERE c.category = cat.id)
+                                               AND NOT EXISTS (SELECT 1 FROM {course_categories} sub
+                                                                WHERE sub.parent = cat.id)');
+        $destcatpath = [];
         foreach ($categories as $category) {
             $destcatpath[$category->id] = $catpath[$category->id];
         }
@@ -61,12 +62,9 @@ class local_catdup_main_form extends moodleform {
         $select = $mform->addElement('select', 'destination', get_string('destination', 'local_catdup'), $destcatpath);
 
         $mform->addElement('text', 'extension', get_string('extension', 'local_catdup'));
-        $mform->setType('extension', PARAM_RAW);
+        $mform->setType('extension', PARAM_TEXT);
         $mform->setDefault('extension', '_' . date("Y") ); // Default value.
-
-        $mform->addElement('text', 'oldextension', get_string('oldextension', 'local_catdup'));
-        $mform->setType('oldextension', PARAM_RAW);
-        $mform->setDefault('oldextension', '_' . (date("Y") - 1) ); // Default value.
+        $mform->addRule('extension', get_string('required'), 'required', null, 'client');
 
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('pluginname', 'local_catdup'));
@@ -79,8 +77,17 @@ class local_catdup_main_form extends moodleform {
         if (empty($data['origin'])) {
             $errors['origin'] = get_string('selectorigin', 'local_catdup');
         }
+        if (empty(trim($data['extension']))) {
+            $errors['extension'] = get_string('required');
+        }
         if (empty($data['destination'])) {
             $errors['destination'] = get_string('selectdestination', 'local_catdup');
+        } else if (!empty($data['origin'])) {
+            global $DB;
+            $destpath = $DB->get_field('course_categories', 'path', ['id' => $data['destination']]);
+            if ($destpath && in_array($data['origin'], explode('/', $destpath))) {
+                $errors['destination'] = get_string('destinationinsideorigin', 'local_catdup');
+            }
         }
         return $errors;
     }
