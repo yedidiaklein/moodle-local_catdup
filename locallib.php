@@ -117,50 +117,62 @@ function local_catdup_duplicate_course($courseid, $fullname, $shortname, $catego
     unset($bc);
 
     // Restore.
-    if (!file_exists($CFG->dataroot . '/temp/backup/' . $backupdir . "/moodle_backup.xml")) {
-        $file->extract_to_pathname(get_file_packer('application/vnd.moodle.backup'), $CFG->dataroot.'/temp/backup/'.$backupdir);
-    }
-
-    $data = new \stdClass();
-    $data->category = $categoryid;
-    $data->shortname = $shortname;
-    $data->fullname = $fullname;
-    $data->visible = $visible;
-
-    // Create empty new course.
-    $newcourse = create_course($data);
-    $destcourse = $newcourse->id;
-
-    if (file_exists($CFG->dataroot . '/temp/backup/' . $backupdir . '/course/course.xml')) {
-        $controller = new \restore_controller($backupdir,
-                                        $destcourse,
-                                        \backup::INTERACTIVE_NO,
-                                        \backup::MODE_SAMESITE,
-                                        $admin->id,
-                                        \backup::TARGET_NEW_COURSE);
-
-        foreach ($options as $name => $value) {
-            $setting = $controller->get_plan()->get_setting($name);
-            if ($setting->get_status() == backup_setting::NOT_LOCKED) {
-                $setting->set_value($value);
-            }
+    $backuppath = $CFG->backuptempdir . '/' . $backupdir;
+    try {
+        if (!file_exists($backuppath . '/moodle_backup.xml')) {
+            $file->extract_to_pathname(get_file_packer('application/vnd.moodle.backup'), $backuppath);
         }
 
-        if (!$controller->execute_precheck()) {
-            if ($controller->get_status() !== \backup::STATUS_AWAITING) {
-                die;
+        // Create a bare course record (same as core duplicate_course), avoiding create_course()
+        // which fires course_created and lets plugins/settings add default activities.
+        $destcourse = \restore_dbops::create_new_course($fullname, $shortname, $categoryid);
+
+        if (file_exists($backuppath . '/course/course.xml')) {
+            $controller = new \restore_controller($backupdir,
+                                            $destcourse,
+                                            \backup::INTERACTIVE_NO,
+                                            \backup::MODE_SAMESITE,
+                                            $admin->id,
+                                            \backup::TARGET_NEW_COURSE);
+
+            foreach ($options as $name => $value) {
+                $setting = $controller->get_plan()->get_setting($name);
+                if ($setting->get_status() == backup_setting::NOT_LOCKED) {
+                    $setting->set_value($value);
+                }
             }
+
+            if (!$controller->execute_precheck()) {
+                if ($controller->get_status() !== \backup::STATUS_AWAITING) {
+                    $precheckresults = $controller->get_precheck_results();
+                    $errorinfo = !empty($precheckresults['errors']) ? implode(' ', $precheckresults['errors']) : '';
+                    $controller->destroy();
+                    // Remove the empty course so its shortname is free for a retry.
+                    delete_course($destcourse, false);
+                    throw new \moodle_exception('generalexceptionmessage', 'error', '',
+                        'Restore precheck failed for course ' . $courseid . ': ' . $errorinfo);
+                }
+            }
+
+            $controller->execute_plan();
+            $controller->destroy();
+
+            // Restore adds a copy counter to course names; apply the requested names after restore.
+            $record = new \stdClass();
+            $record->id = $destcourse;
+            $record->fullname = $fullname;
+            $record->shortname = $shortname;
+            $record->visible = $visible;
+            $record->visibleold = $visible;
+            $DB->update_record('course', $record);
+            rebuild_course_cache($destcourse);
         }
-
-        $controller->execute_plan();
-
-        // Restore adds a copy counter to course names; apply the requested names after restore.
-        $record = new \stdClass();
-        $record->id = $destcourse;
-        $record->fullname = $fullname;
-        $record->shortname = $shortname;
-        $DB->update_record('course', $record);
-        rebuild_course_cache($destcourse);
-        $file->delete();
+    } finally {
+        if ($file) {
+            $file->delete();
+        }
+        if (empty($CFG->keeptempdirectoriesonbackup)) {
+            fulldelete($backuppath);
+        }
     }
 }
